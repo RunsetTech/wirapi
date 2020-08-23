@@ -17,6 +17,9 @@ while read -r -d $'\t' device; do
 		read -r
 	else
 		read -r public_key preshared_key endpoint allowed_ips latest_handshake transfer_rx transfer_tx persistent_keepalive
+		if [[ "$allowed_ips" == "10.9.0.3/32" ]]; then
+			continue
+		fi
 		printf '%s\t{\n' "$delim" 
 		delim=$'\n'
 		{ printf '%s\t\t"publicKey": "%s"' '' "$public_key"; delim=$',\n'; }
