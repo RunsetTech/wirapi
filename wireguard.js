@@ -42,54 +42,33 @@ async function initialize() {
 async function addPeer(data) {
     // function to generate a valid peer IP in sequence in the database
     async function getAllowedIP() {
-        // function IPtoInt(IP) {
-        //     return (IP.split('.')[2] * 200) + (IP.split('.')[3] - 10)
-        // }
-
-        // function intToIP(count) {
-        //     return process.env.LOCAL_IP_RANGE + Math.floor(count / 200).toString() + '.' + ((count % 200) + 10).toString()
-        // }
-
-        function incrementIp(input) {
-            tokens = input.split(".");
-            if (tokens.length != 4)
-                throw console.log('ip invalid');
-            for (var i = tokens.length - 1; i >= 0; i--) {
-                item = parseInt(tokens[i]);
-                if (item < 255) {
-                    tokens[i] =item + 1;
-                    for (var j = i + 1; j < 4; j++) {
-                        tokens[j] = "0";
-                    }
-                    break;
-                }
-            }
-            return (tokens[0] + '.' + tokens[1] + '.' + tokens[2] + '.' + tokens[3])
+        function IPtoInt(IP) {
+            return (IP.split('.')[2] * 200) + (IP.split('.')[3] - 10)
         }
-        
+
+        function intToIP(count) {
+            return process.env.LOCAL_IP_RANGE + Math.floor(count / 200).toString() + '.' + ((count % 200) + 10).toString()
+        }
 
         let documents = await Peer.find().exec()
         let IPs = []
 
         // loop through all peers and extract allowedIP into IPs
+        for (i in documents) {
+            IPs.push(IPtoInt(documents[i].allowedIP))
+        }
+        // sort the IPs array
+        IPs.sort()
 
-        if(documents.length == 0) {
-            return '10.9.0.12';
-        } else {
-            ipsArray = [];
-            for (i in documents) {
-                var allowedIPStr = documents[i].allowedIP;
-                 
-                ipsArray.push(allowedIPStr);
+        // check if there are any gaps in IP assignment
+        for (i in IPs) {
+            // if so, return the gap IP. At the end of the array, it will compare to undefined, which will return true, and trigger it to return the next available IP.
+            if (IPs[i] + 1 !== IPs[parseInt(i) + 1]) {
+                return intToIP(IPs[i] + 1)
             }
-
-            ipsArray.sort((a, b) => {
-                const num1 = Number(a.split(".").map((num) => (`000${num}`).slice(-3) ).join(""));
-                const num2 = Number(b.split(".").map((num) => (`000${num}`).slice(-3) ).join(""));
-                return num1-num2;
-            });
-
-            return incrementIp(ipsArray[(ipsArray.length - 1)]);
+        }
+        // In case it's empty (undefined === undefined is true), return the next available IP, which is 0
+        return intToIP(0)
     }
 
     // check if the new peer has a user attribute
