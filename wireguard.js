@@ -56,7 +56,7 @@ async function addPeer(data) {
                 throw console.log('ip invalid');
             for (var i = tokens.length - 1; i >= 0; i--) {
                 item = parseInt(tokens[i]);
-                if (item < 255) {
+                if (item < 200) {
                     tokens[i] =item + 1;
                     for (var j = i + 1; j < 4; j++) {
                         tokens[j] = "0";
@@ -74,7 +74,7 @@ async function addPeer(data) {
         // loop through all peers and extract allowedIP into IPs
 
         if(documents.length == 0) {
-            return '10.9.0.12';
+            return '10.0.0.10';
         } else {
             ipsArray = [];
             for (i in documents) {
