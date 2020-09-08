@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 // setup GraphQL route
 app.use('/', graphQLHTTP({
     schema: graphQL.schema,
-    graphiql: process.env.ENABLE_GRAPHIQL
+    graphiql: false
 }))
 
 // periodically check the WireGuard CLI for updates
