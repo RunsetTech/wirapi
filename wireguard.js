@@ -15,7 +15,7 @@ async function initialize() {
     Server.findOne({ serverSettings: true }).then(server => {
         if(server == null || server == undefined) {
             let server = new Server()
-            let serverJsonString = execSync('bash ./json.sh').toString()
+            let serverJsonString = execSync('bash /home/ubuntu/wirapi/json.sh').toString()
             // console.log(serverJsonString)
             let serverJson = JSON.parse(serverJsonString).peers[0]
             server.serverSettings = true;
@@ -128,7 +128,7 @@ async function addPeer(data) {
     }
 
     // add a peer in CLI and save to database
-    let peer = new Peer(JSON.parse(execSync('bash ./add.sh ' + await getAllowedIP()).toString()))
+    let peer = new Peer(JSON.parse(execSync('bash /home/ubuntu/wirapi/add.sh ' + await getAllowedIP()).toString()))
 
     // default enabled to true if it's not provided
     peer.enabled = data.enabled === undefined ? true : data.enabled
@@ -338,7 +338,7 @@ async function checkStatus() {
     // get all active peers from CLI
     
 
-    let jsonString = execSync('bash ./json2.sh').toString()
+    let jsonString = execSync('bash /home/ubuntu/wirapi/json2.sh').toString()
     // console.log(jsonString)
     let peers = JSON.parse(jsonString).peers
 

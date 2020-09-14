@@ -6,14 +6,14 @@ const graphQL = require('./graphql')
 const mongoose = require('mongoose')
 const wireguard = require('./wireguard')
 const ipWhitelist = require('ip-whitelist')
-const Server = require('./mongoose').Server
+const Server = require('/home/ubuntu/wirapi/mongoose').Server
 
 if(typeof URLSearchParams === 'undefined'){
     URLSearchParams = require('url').URLSearchParams;
 }
 
 
-mongoose.connect(process.env.DB_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost/lead-knight2', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(console.log('Database connected'))
 
 // checks for root permission in order to access the WG interface
@@ -31,7 +31,7 @@ wireguard.initialize()
 
 
 // start the server
-app.listen(process.env.PORT)
+app.listen(80)
 console.log('Server running')
 
 /* // debugging code to find your IP address
@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 // setup GraphQL route
 app.use('/', graphQLHTTP({
     schema: graphQL.schema,
-    graphiql: false
+    graphiql: true
 }))
 
 // periodically check the WireGuard CLI for updates
